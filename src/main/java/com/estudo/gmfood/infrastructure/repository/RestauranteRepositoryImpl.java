@@ -32,7 +32,6 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class);
 		Root<Restaurante> root = criteria.from(Restaurante.class); //from Restaurante
 		
-		
 		List<Predicate> predicates = new ArrayList<>();
 		
 		if(StringUtils.hasText(nome)) {
