@@ -9,9 +9,9 @@ insert into cidade (nome, estado_id) values ('Santos', 1);
 insert into cidade (nome, estado_id) values ('Belo Horizonte', 2);
 insert into cidade (nome, estado_id) values ('Rio Branco', 3);
 
-insert into restaurante (nome, taxa_frete, cozinha_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Tailandez', 10, 1, 1, '05887-300', 'Rua Gabriel', '1000', 'Centro');
-insert into restaurante (nome, taxa_frete, cozinha_id) values ('Thai Tailandez', 10.50, 1);
-insert into restaurante (nome, taxa_frete, cozinha_id) values ('Italiano', 15, 2);
+insert into restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Tailandez', 10, 1, utc_timestamp, utc_timestamp, 1, '05887-300', 'Rua Gabriel', '1000', 'Centro');
+insert into restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) values ('Thai Tailandez', 10.50, 1, utc_timestamp, utc_timestamp);
+insert into restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) values ('Italiano', 15, 2, utc_timestamp, utc_timestamp);
 
 
 insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
