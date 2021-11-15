@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -47,6 +48,10 @@ public class Restaurante {
 	@JsonIgnore
 	@Embedded // é uma parte da class restaurante
 	private Endereco endereco;
+	
+	@JsonIgnore
+	@OneToMany
+	private List<Produto> produtos = new ArrayList<>();
 
 	@JsonIgnore
 	@CreationTimestamp
