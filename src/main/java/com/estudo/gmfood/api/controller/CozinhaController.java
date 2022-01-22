@@ -66,8 +66,7 @@ public class CozinhaController {
 		Cozinha cozinhaAtual = cadastroCozinhaService.buscarOuFalhar(id);
 
 //		cozinhaAtual.setNome(cozinha.getNome());
-		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id"); // copiar as propriedades de cozinha para dentro de
-																// cozinha atual
+		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id"); // copiar as propriedades de cozinha para dentro de cozinha atual
 
 		return cadastroCozinhaService.salvar(cozinhaAtual);
 	}
