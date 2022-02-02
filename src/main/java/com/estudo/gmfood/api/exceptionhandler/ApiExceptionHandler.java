@@ -1,5 +1,7 @@
 package com.estudo.gmfood.api.exceptionhandler;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import com.estudo.gmfood.domain.exception.EntidadeEmUsoException;
 import com.estudo.gmfood.domain.exception.EntidadeNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
 
+import java.util.stream.Collectors;
+
 @ControllerAdvice // diz que dentro desse componente podemos adicionar exception handler que as
 					// exceções de todos os controladores serão tratadas por aqui
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // ResponseEntityExceptionHandler = class de
@@ -23,15 +27,36 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // Res
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		
+		Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+		// rootCause é um InvalidFormatException
+		if(rootCause instanceof InvalidFormatException) {
+			return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+		}
+
 		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
-		
 		Problem problem = createProblemBuilder(status, ProblemType.MENSAGEM_INCOMPREENSIVEL, detail).build();
 		
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
-	
-	
+
+	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		ex.getPath().forEach(ref -> System.out.println(ref.getFieldName()));
+
+		String path = ex.getPath().stream()
+				.map(ref -> ref.getFieldName())
+				.collect(Collectors.joining("."));
+
+		String detail = String.format("A propriedade '%s' recebeu o valor '%s', que é de um tipo inválido. " +
+						"Corrija e informe um valor compatível com o tipo %s.", path, ex.getValue(), ex.getTargetType().getSimpleName());
+
+		Problem problem = createProblemBuilder(status, ProblemType.MENSAGEM_INCOMPREENSIVEL, detail).build();
+
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+
+
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)
 	public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex,
 			WebRequest request) {
