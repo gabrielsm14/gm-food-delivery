@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -21,10 +23,8 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice // diz que dentro desse componente podemos adicionar exception handler que as
 // exceções de todos os controladores serão tratadas por aqui
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // ResponseEntityExceptionHandler = class de
-    // conveniencia para class handler globais
-    // que é uma implementação padrao que trata
-    // exception internas do spring mvc
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // ResponseEntityExceptionHandler = class de conveniencia para class handler globais
+    // que é uma implementação padrao que trata exception internas do spring mvc
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -33,9 +33,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // Res
 
         // rootCause é um InvalidFormatException
         if (rootCause instanceof InvalidFormatException) {
-            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
         } else if (rootCause instanceof PropertyBindingException) {
-            return handleIgnoredPropertyException((PropertyBindingException) rootCause, headers, status, request);
+            return handleIgnoredProperty((PropertyBindingException) rootCause, headers, status, request);
         }
 
         String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
@@ -44,7 +44,27 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // Res
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
-    private ResponseEntity<Object> handleIgnoredPropertyException(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            return handleMethodArgumentTypeMismatch((MethodArgumentTypeMismatchException) ex, headers, status, request);
+        }
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        String detail = String.format("O Parâmetro de URL '%s' recebeu o valor '%s', que é de um tipo inválido. " +
+                "Corrija e informe um valor compatível com o tipo %s", ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, ProblemType.PARAETRO_INVALIDO, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+
+    }
+
+    private ResponseEntity<Object> handleIgnoredProperty(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
 //        ex.getPath().forEach(ref -> System.out.println(ref.getFieldName()));
 
@@ -65,7 +85,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // Res
                 .collect(Collectors.joining("."));
     }
 
-    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         ex.getPath().forEach(ref -> System.out.println(ref.getFieldName()));
 
