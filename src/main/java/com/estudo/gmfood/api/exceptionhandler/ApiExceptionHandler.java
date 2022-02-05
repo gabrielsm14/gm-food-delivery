@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -25,6 +26,16 @@ import java.util.stream.Collectors;
 // exceções de todos os controladores serão tratadas por aqui
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // ResponseEntityExceptionHandler = class de conveniencia para class handler globais
     // que é uma implementação padrao que trata exception internas do spring mvc
+
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        String detail = String.format("O recurso '%s', que você tentou acessar, é inexistente.", ex.getRequestURL());
+
+        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, detail).build();
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -106,7 +117,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler { // Res
 
         HttpStatus status = HttpStatus.NOT_FOUND;
 
-        Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_NAO_ENCONTRDA, ex.getMessage()).build();
+        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, ex.getMessage()).build();
 
 //		Problem problem = Problem.builder()
 //				.status(status.value())
