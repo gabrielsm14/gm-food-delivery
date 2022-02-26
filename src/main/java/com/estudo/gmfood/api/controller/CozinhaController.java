@@ -20,6 +20,8 @@ import com.estudo.gmfood.domain.model.Cozinha;
 import com.estudo.gmfood.domain.repository.CozinhaRepository;
 import com.estudo.gmfood.domain.service.CadastroCozinhaService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {
@@ -55,7 +57,7 @@ public class CozinhaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha) {
+	public ResponseEntity<Cozinha> adicionar(@RequestBody @Valid Cozinha cozinha) {
 		Cozinha salvar = cadastroCozinhaService.salvar(cozinha);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(salvar);
