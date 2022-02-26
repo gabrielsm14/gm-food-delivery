@@ -23,7 +23,8 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
-import com.estudo.gmfood.Groups;
+import com.estudo.gmfood.core.validation.Groups;
+import com.estudo.gmfood.core.validation.TaxaFrete;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -48,6 +49,7 @@ public class Restaurante {
 
 	@NotNull
 	@PositiveOrZero
+	@TaxaFrete
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	

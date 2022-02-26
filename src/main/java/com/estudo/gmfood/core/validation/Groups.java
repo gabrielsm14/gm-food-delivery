@@ -1,4 +1,4 @@
-package com.estudo.gmfood;
+package com.estudo.gmfood.core.validation;
 
 public interface Groups {
 

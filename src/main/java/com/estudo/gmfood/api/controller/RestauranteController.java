@@ -1,6 +1,5 @@
 package com.estudo.gmfood.api.controller;
 
-import com.estudo.gmfood.Groups;
 import com.estudo.gmfood.domain.exception.CozinhaNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Restaurante;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

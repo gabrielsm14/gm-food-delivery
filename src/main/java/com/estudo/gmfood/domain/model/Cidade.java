@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
-import com.estudo.gmfood.Groups;
+import com.estudo.gmfood.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
