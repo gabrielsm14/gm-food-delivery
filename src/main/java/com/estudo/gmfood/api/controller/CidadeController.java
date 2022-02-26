@@ -21,6 +21,8 @@ import com.estudo.gmfood.domain.model.Cidade;
 import com.estudo.gmfood.domain.repository.CidadeRepository;
 import com.estudo.gmfood.domain.service.CadastroCidadeService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/cidades")
 public class CidadeController {
@@ -43,7 +45,7 @@ public class CidadeController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cidade adicionar(@RequestBody Cidade cidade) {
+	public Cidade adicionar(@RequestBody @Valid Cidade cidade) {
 		try {
 			return cadastroCidade.salvar(cidade);
 		} catch (EstadoNaoEncontradaException e) {
@@ -52,7 +54,7 @@ public class CidadeController {
 	}
 
 	@PutMapping("/{cidadeId}")
-	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
+	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody @Valid Cidade cidade) {
 		Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 
 		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
