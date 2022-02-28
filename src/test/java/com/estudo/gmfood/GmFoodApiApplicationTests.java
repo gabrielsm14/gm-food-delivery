@@ -1,4 +1,4 @@
-package com.estudo.gabifood;
+package com.estudo.gmfood;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
