@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Data
+@Data 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Pedido {
@@ -27,7 +27,7 @@ public class Pedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private BigDecimal subtotal;
+	private BigDecimal subtotal; 
 	private BigDecimal valorTotal;
 
 	@Embedded

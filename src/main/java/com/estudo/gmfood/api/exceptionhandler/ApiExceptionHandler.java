@@ -1,11 +1,9 @@
 package com.estudo.gmfood.api.exceptionhandler;
 
-import com.estudo.gmfood.domain.exception.EntidadeEmUsoException;
-import com.estudo.gmfood.domain.exception.EntidadeNaoEncontradaException;
-import com.estudo.gmfood.domain.exception.NegocioException;
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +23,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.estudo.gmfood.domain.exception.EntidadeEmUsoException;
+import com.estudo.gmfood.domain.exception.EntidadeNaoEncontradaException;
+import com.estudo.gmfood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 // diz que dentro desse componente podemos adicionar exception handler que as exceções de todos os controladores serão tratadas por aqui,
 // que é uma implementação padrao que trata exception internas do spring mvc
@@ -95,8 +96,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, ProblemType.DADOS_INVALIDOS, detail, LocalDateTime.now())
                 .userMessage(detail)
-                .objects(problemObjects)
-                .build();
+                .objects(problemObjects) 
+                .build(); 
 
         return handleExceptionInternal(ex, problem, headers, status, request);
 

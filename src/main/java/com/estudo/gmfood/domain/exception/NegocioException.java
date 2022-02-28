@@ -13,3 +13,4 @@ public class NegocioException extends RuntimeException {
 		super(mensagem, causa);
 	}
 }
+ 

@@ -18,3 +18,4 @@ public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long> {
 	
 	boolean existsByNome(String nome);
 }
+  

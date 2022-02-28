@@ -10,3 +10,4 @@ public interface CustomJpaRepository<T, ID> extends JpaRepository<T, ID>{
 
 	Optional<T> buscarPrimeiro();
 }
+ 

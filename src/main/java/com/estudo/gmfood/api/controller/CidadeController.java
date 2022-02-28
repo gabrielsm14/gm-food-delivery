@@ -2,6 +2,8 @@ package com.estudo.gmfood.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +22,6 @@ import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Cidade;
 import com.estudo.gmfood.domain.repository.CidadeRepository;
 import com.estudo.gmfood.domain.service.CadastroCidadeService;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/cidades")

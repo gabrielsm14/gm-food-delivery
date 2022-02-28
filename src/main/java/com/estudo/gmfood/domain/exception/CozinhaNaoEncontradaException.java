@@ -12,3 +12,4 @@ public class CozinhaNaoEncontradaException extends EntidadeNaoEncontradaExceptio
 		this(String.format("Não existe um cadastro de cozinha com código %d", id));
 	}
 }
+ 
