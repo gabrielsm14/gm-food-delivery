@@ -1,6 +1,5 @@
 package com.estudo.gmfood.api.exceptionhandler;
 
-import com.estudo.gmfood.core.validation.ValidacaoException;
 import com.estudo.gmfood.domain.exception.EntidadeEmUsoException;
 import com.estudo.gmfood.domain.exception.EntidadeNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
@@ -42,7 +41,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
+
+        String detail = String.format("Um ou mais campos inválidos. Faça o preenchimento correto e tente novamente.");
+
+        BindingResult bindingResult = ex.getBindingResult(); //acesso a quais propriedades foram violadas
+
+        List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
+                .map(objectError -> {
+                    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+                    String name = objectError.getObjectName();
+
+                    if (objectError instanceof FieldError) {
+                        name = ((FieldError) objectError).getField();
+                    }
+
+                    return Problem.Object.builder()
+                            .name(name)
+                            .userMessage(message)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        Problem problem = createProblemBuilder(status, ProblemType.DADOS_INVALIDOS, detail, LocalDateTime.now())
+                .userMessage(detail)
+                .objects(problemObjects)
+                .build();
+
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
     private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -73,11 +100,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, headers, status, request);
 
-    }
-
-    @ExceptionHandler({ValidacaoException.class})
-    public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
-        return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @Override

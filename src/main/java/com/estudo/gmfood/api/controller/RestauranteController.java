@@ -63,7 +63,7 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public Restaurante atualizar(@PathVariable  Long id, @RequestBody @Valid Restaurante restaurante) {
+    public Restaurante atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante) {
 
         Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
@@ -75,58 +75,5 @@ public class RestauranteController {
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
-
-
     }
-
-    @PatchMapping("/{id}")
-    public Restaurante atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
-
-        Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
-
-        merge(campos, restauranteAtual, request);
-        validate(restauranteAtual, "restaurante");
-
-        return atualizar(id, restauranteAtual);
-    }
-
-    private void validate(Restaurante restaurante, String objectName) {
-        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
-        validator.validate(restaurante, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            throw new ValidacaoException(bindingResult);
-        }
-    }
-
-    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteeAtual, HttpServletRequest request) {
-
-        ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-
-            Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
-
-            System.out.println(restauranteOrigem);
-
-            dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
-                Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade); // findField retorna a
-                // instancia de um campo
-                field.setAccessible(true);
-
-                Object novoValor = ReflectionUtils.getField(field, restauranteOrigem); // getField buscar o valor do campo
-
-//			System.out.println(nomePropriedade + " = " + valorPropriedade + " = " + novoValor);
-
-                ReflectionUtils.setField(field, restauranteeAtual, novoValor);
-            });
-        } catch (IllegalArgumentException e) {
-            Throwable rootCause = ExceptionUtils.getRootCause(e);
-            throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
-        }
-    }
-
 }
