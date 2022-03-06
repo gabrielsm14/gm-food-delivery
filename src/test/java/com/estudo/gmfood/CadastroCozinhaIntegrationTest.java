@@ -22,7 +22,7 @@ public class CadastroCozinhaIntegrationTest {
     private CadastroCozinhaService cadastroCozinhaService;
 
     @Test
-    public void testarCadastroCozinhaComSucesso() {
+    public void deveriaCadastrarCozinhaComSucesso() {
         // cenario
         Cozinha novaCozinha = new Cozinha();
         novaCozinha.setNome("Chinesa");
