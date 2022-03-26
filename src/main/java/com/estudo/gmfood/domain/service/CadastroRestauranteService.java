@@ -7,6 +7,7 @@ import com.estudo.gmfood.domain.exception.RestauranteNaoEncontradaException;
 import com.estudo.gmfood.domain.model.Cozinha;
 import com.estudo.gmfood.domain.model.Restaurante;
 import com.estudo.gmfood.domain.repository.RestauranteRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroRestauranteService {
@@ -18,6 +19,7 @@ public class CadastroRestauranteService {
 	@Autowired
 	CadastroCozinhaService cadastroCozinhaService;
 
+	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
 

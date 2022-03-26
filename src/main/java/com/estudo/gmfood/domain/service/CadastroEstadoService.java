@@ -9,6 +9,7 @@ import com.estudo.gmfood.domain.exception.EntidadeEmUsoException;
 import com.estudo.gmfood.domain.exception.EstadoNaoEncontradaException;
 import com.estudo.gmfood.domain.model.Estado;
 import com.estudo.gmfood.domain.repository.EstadoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroEstadoService {
@@ -16,15 +17,15 @@ public class CadastroEstadoService {
 	private static final String MSG_ESTADO_EM_USO 
 		= "Estado de código %d não pode ser removido, pois está em uso";
 	
-
-	
 	@Autowired
 	private EstadoRepository estadoRepository;
-	
+
+	@Transactional
 	public Estado salvar(Estado estado) {
 		return estadoRepository.save(estado);
 	}
-	
+
+	@Transactional
 	public void excluir(Long estadoId) {
 		try {
 			estadoRepository.deleteById(estadoId);

@@ -29,14 +29,11 @@ public class Cozinha {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-//	@JsonIgnore
-//	@JsonProperty("titulo")
+
 	@NotBlank
 	@Column(nullable = false)
 	private String nome;
 	
-	@JsonIgnore // nao serealiza restaurantes
 	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes = new ArrayList<>();
 }

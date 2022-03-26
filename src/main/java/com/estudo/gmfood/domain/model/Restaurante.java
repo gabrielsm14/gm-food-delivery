@@ -1,7 +1,6 @@
 package com.estudo.gmfood.domain.model;
 
 import com.estudo.gmfood.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,8 +37,6 @@ public class Restaurante {
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    //	@JsonIgnoreProperties("hibernateLazyInitializer")
-    //@JsonIgnore
     @Valid
     @NotNull
     @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)// na hora de validar cozinha converte do group defaut para Groups.cadastroRestaurante.class
@@ -47,28 +44,23 @@ public class Restaurante {
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
-    @JsonIgnore
     @Embedded // é uma parte da class restaurante
     private Endereco endereco;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataAtualizacao;
 
-    @JsonIgnore
     @ManyToMany // ToMany por padrao é Lazy
     @JoinTable(name = "restaurante_forma_pagamento",
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
     private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
 }
