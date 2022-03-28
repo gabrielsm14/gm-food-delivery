@@ -28,17 +28,17 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+//    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @NotNull 
-    @PositiveOrZero
+//    @NotNull
+//    @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    @Valid
-    @NotNull
+//    @Valid
+//    @NotNull
     @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)// na hora de validar cozinha converte do group defaut para Groups.cadastroRestaurante.class
     @ManyToOne //(fetch = FetchType.LAZY) // ToOne por padrao é Eager
     @JoinColumn(name = "cozinha_id", nullable = false)
