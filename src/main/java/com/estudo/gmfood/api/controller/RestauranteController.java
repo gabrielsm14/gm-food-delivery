@@ -1,8 +1,8 @@
 package com.estudo.gmfood.api.controller;
 
 
-import com.estudo.gmfood.api.assembier.RestauranteInputDesassembier;
-import com.estudo.gmfood.api.assembier.RestauranteModelAssembier;
+import com.estudo.gmfood.api.assembier.RestauranteInputDesassembler;
+import com.estudo.gmfood.api.assembier.RestauranteModelAssembler;
 import com.estudo.gmfood.api.model.RestauranteRequest;
 import com.estudo.gmfood.api.model.input.RestauranteInput;
 import com.estudo.gmfood.domain.exception.CozinhaNaoEncontradaException;
@@ -32,29 +32,29 @@ public class RestauranteController {
     private SmartValidator validator;
 
     @Autowired
-    private RestauranteModelAssembier restauranteModelAssembier;
+    private RestauranteModelAssembler restauranteModelAssembler;
 
     @Autowired
-    private RestauranteInputDesassembier restauranteInputDesassembier;
+    private RestauranteInputDesassembler restauranteInputDesassembler;
 
     @GetMapping
     public List<RestauranteRequest> listar() {
-        return restauranteModelAssembier.toCollectionModel(restauranteRepository.findAll());
+        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public RestauranteRequest buscar(@PathVariable Long id) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(id);
 
-        return restauranteModelAssembier.toModel(restaurante);
+        return restauranteModelAssembler.toModel(restaurante);
     }
 
     @PostMapping
     public RestauranteRequest adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            Restaurante restaurante = restauranteInputDesassembier.toDomainObject(restauranteInput);
+            Restaurante restaurante = restauranteInputDesassembler.toDomainObject(restauranteInput);
 
-            return restauranteModelAssembier.toModel(cadastroRestauranteService.salvar(restaurante));
+            return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restaurante));
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -63,13 +63,13 @@ public class RestauranteController {
     @PutMapping("/{id}")
     public RestauranteRequest atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            Restaurante restaurante = restauranteInputDesassembier.toDomainObject(restauranteInput);
+            Restaurante restaurante = restauranteInputDesassembler.toDomainObject(restauranteInput);
 
             Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
             BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
-            return restauranteModelAssembier.toModel(restauranteRepository.save(restauranteAtual));
+            return restauranteModelAssembler.toModel(restauranteRepository.save(restauranteAtual));
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
