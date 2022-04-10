@@ -10,7 +10,6 @@ import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Restaurante;
 import com.estudo.gmfood.domain.repository.RestauranteRepository;
 import com.estudo.gmfood.domain.service.CadastroRestauranteService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
@@ -63,11 +62,9 @@ public class RestauranteController {
     @PutMapping("/{id}")
     public RestauranteRequest atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            Restaurante restaurante = restauranteInputDesassembler.toDomainObject(restauranteInput);
-
             Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
-            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+            restauranteInputDesassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
             return restauranteModelAssembler.toModel(restauranteRepository.save(restauranteAtual));
         } catch (CozinhaNaoEncontradaException e) {

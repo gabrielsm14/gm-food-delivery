@@ -1,6 +1,7 @@
 package com.estudo.gmfood.api.assembier;
 
 import com.estudo.gmfood.api.model.input.RestauranteInput;
+import com.estudo.gmfood.domain.model.Cozinha;
 import com.estudo.gmfood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,4 +16,11 @@ public class RestauranteInputDesassembler {
     public Restaurante toDomainObject(RestauranteInput restauranteInput) {
        return modelMapper.map(restauranteInput, Restaurante.class);
     }
+
+    public void copyToDomainObject(RestauranteInput restauranteInput, Restaurante restaurante) {
+//        Para evitar org.hibernate.HibernateException: identifier of an instance of com.estudo.gmfood.domain.cozina was altered from 1 to 2
+        restaurante.setCozinha(new Cozinha());
+        modelMapper.map(restauranteInput, restaurante);
+    }
+
 }
