@@ -13,4 +13,5 @@ public class RestauranteRequest {
     private String nome;
     private BigDecimal taxaFrete;
     private CozinhaRequest cozinha;
+    private Boolean ativo;
 }

@@ -1,10 +1,10 @@
 package com.estudo.gmfood.api.model;
 
 import lombok.Getter;
-import org.springframework.stereotype.Service;
+import lombok.Setter;
 
 @Getter
-@Service
+@Setter
 public class CidadeRequest {
 
     private Long id;
