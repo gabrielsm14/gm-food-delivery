@@ -1,5 +1,6 @@
 package com.estudo.gmfood.domain.service;
 
+import com.estudo.gmfood.domain.model.Cidade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +18,21 @@ public class CadastroRestauranteService {
 	private RestauranteRepository restauranteRepository;
 
 	@Autowired
-	CadastroCozinhaService cadastroCozinhaService;
+	private CadastroCozinhaService cadastroCozinhaService;
+
+	@Autowired
+	private CadastroCidadeService cadastroCidadeService;
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
+		Long cidadeId = restaurante.getEndereco().getCidade().getId();
 
 		Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+		Cidade cidade = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
 		restaurante.setCozinha(cozinha);
+		restaurante.getEndereco().setCidade(cidade);
 
 		return restauranteRepository.save(restaurante);
 	}

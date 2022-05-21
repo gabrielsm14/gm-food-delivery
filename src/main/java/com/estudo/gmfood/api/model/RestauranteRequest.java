@@ -14,4 +14,5 @@ public class RestauranteRequest {
     private BigDecimal taxaFrete;
     private CozinhaRequest cozinha;
     private Boolean ativo;
+    private EnderecoRequest endereco;
 }

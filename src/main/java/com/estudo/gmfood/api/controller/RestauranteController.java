@@ -5,6 +5,7 @@ import com.estudo.gmfood.api.assembier.RestauranteInputDesassembler;
 import com.estudo.gmfood.api.assembier.RestauranteModelAssembler;
 import com.estudo.gmfood.api.model.RestauranteRequest;
 import com.estudo.gmfood.api.model.input.RestauranteInput;
+import com.estudo.gmfood.domain.exception.CidadeNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.CozinhaNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Restaurante;
@@ -55,7 +56,7 @@ public class RestauranteController {
             Restaurante restaurante = restauranteInputDesassembler.toDomainObject(restauranteInput);
 
             return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restaurante));
-        } catch (CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
@@ -68,7 +69,7 @@ public class RestauranteController {
             restauranteInputDesassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
             return restauranteModelAssembler.toModel(restauranteRepository.save(restauranteAtual));
-        } catch (CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
