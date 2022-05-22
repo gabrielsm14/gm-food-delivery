@@ -8,8 +8,10 @@ import com.estudo.gmfood.domain.model.Grupo;
 import com.estudo.gmfood.domain.repository.GrupoRepository;
 import com.estudo.gmfood.domain.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -49,5 +51,22 @@ public class GrupoController {
         grupo = grupoService.salvar(grupo);
 
         return grupoRequestAssembler.toModel(grupo);
+    }
+
+    @PutMapping("/{id}")
+    public GrupoRequest atualizar(@PathVariable Long id, @RequestBody @Valid GrupoInput grupoInput) {
+        Grupo grupoAtual = grupoService.buscarOuFalhar(id);
+
+        grupoInputDisassembler.copyToDomainObject(grupoInput, grupoAtual);
+
+        grupoAtual = grupoService.salvar(grupoAtual);
+
+        return grupoRequestAssembler.toModel(grupoAtual);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long id) {
+        grupoService.excluir(id);
     }
 }
