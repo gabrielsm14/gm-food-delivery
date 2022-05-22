@@ -3,6 +3,7 @@ package com.estudo.gmfood.api.controller;
 import com.estudo.gmfood.api.assembier.UsuarioInputDisassembler;
 import com.estudo.gmfood.api.assembier.UsuarioRequestAssembler;
 import com.estudo.gmfood.api.model.UsuarioRequest;
+import com.estudo.gmfood.api.model.input.SenhaInput;
 import com.estudo.gmfood.api.model.input.UsuarioComSenhaInput;
 import com.estudo.gmfood.api.model.input.UsuarioInput;
 import com.estudo.gmfood.domain.model.Usuario;
@@ -56,7 +57,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public UsuarioRequest atualizar(@PathVariable Long id, @ResponseBody @Valid UsuarioInput usuarioInput) {
+    public UsuarioRequest atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioInput usuarioInput) {
         Usuario usuarioAtual = usuarioService.buscarOuFalhar(id);
 
         usuarioInputDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
@@ -66,4 +67,9 @@ public class UsuarioController {
         return usuarioRequestAssembler.toModel(usuarioAtual);
     }
 
+    @PutMapping("/{id}/senha")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void alterarSenha(@PathVariable Long id, @RequestBody @Valid SenhaInput senha) {
+        usuarioService.alterarSenha(id, senha.getSenhaAtual(), senha.getNovaSenha());
+    }
 }

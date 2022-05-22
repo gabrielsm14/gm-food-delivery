@@ -76,3 +76,9 @@ insert into grupo (nome) values ('Gerente'), ('Cadastrador');
 insert usuario (nome, email) values ('Gabriel Mendonca'), ('gabriel.mendonca@gmail.com')
 insert usuario (nome, email) values ('Maria Gabriela'), ('gabriela.soares@gmail.com')
 insert usuario (nome, email) values ('Guilherme'), ('guilherme.mendonca@gmail.com')
+
+insert into usuario (id, nome, email, senha, data_cadastro) values
+(1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),
+(2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp),
+(3, 'José Souza', 'jose.aux@algafood.com', '123', utc_timestamp),
+(4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp);
