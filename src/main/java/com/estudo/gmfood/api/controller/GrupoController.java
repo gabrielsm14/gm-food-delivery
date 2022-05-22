@@ -45,6 +45,7 @@ public class GrupoController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public GrupoRequest adicionar(@RequestBody GrupoInput grupoInput) {
         Grupo grupo = grupoInputDisassembler.toDomainObject(grupoInput);
 

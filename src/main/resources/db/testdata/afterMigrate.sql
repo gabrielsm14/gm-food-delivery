@@ -72,3 +72,7 @@ insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('San
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
 insert into grupo (nome) values ('Gerente'), ('Cadastrador');
+
+insert usuario (nome, email) values ('Gabriel Mendonca'), ('gabriel.mendonca@gmail.com')
+insert usuario (nome, email) values ('Maria Gabriela'), ('gabriela.soares@gmail.com')
+insert usuario (nome, email) values ('Guilherme'), ('guilherme.mendonca@gmail.com')
