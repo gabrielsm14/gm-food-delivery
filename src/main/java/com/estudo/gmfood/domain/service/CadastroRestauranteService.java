@@ -1,6 +1,7 @@
 package com.estudo.gmfood.domain.service;
 
 import com.estudo.gmfood.domain.model.Cidade;
+import com.estudo.gmfood.domain.model.FormaPagamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private CadastroCidadeService cadastroCidadeService;
+
+	@Autowired
+	private FormaPagamentoService formaPagamentoService;
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
@@ -49,6 +53,24 @@ public class CadastroRestauranteService {
 		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
 
 		restauranteAtual.inativar();
+	}
+
+	@Transactional
+	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
+
+		restaurante.removerFormaPagamento(formaPagamento);
+	}
+
+	@Transactional
+	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
+
+		restaurante.adicionarFormaPagamento(formaPagamento);
 	}
 
 	public Restaurante buscarOuFalhar(Long id) {
