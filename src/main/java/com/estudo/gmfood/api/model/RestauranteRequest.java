@@ -15,4 +15,5 @@ public class RestauranteRequest {
     private CozinhaRequest cozinha;
     private Boolean ativo;
     private EnderecoRequest endereco;
+    private Boolean aberto;
 }

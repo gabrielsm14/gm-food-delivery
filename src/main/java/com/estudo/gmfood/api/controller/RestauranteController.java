@@ -10,7 +10,7 @@ import com.estudo.gmfood.domain.exception.CozinhaNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Restaurante;
 import com.estudo.gmfood.domain.repository.RestauranteRepository;
-import com.estudo.gmfood.domain.service.CadastroRestauranteService;
+import com.estudo.gmfood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.SmartValidator;
@@ -27,7 +27,7 @@ public class RestauranteController {
     private RestauranteRepository restauranteRepository;
 
     @Autowired
-    private CadastroRestauranteService cadastroRestauranteService;
+    private RestauranteService restauranteService;
 
     @Autowired
     private SmartValidator validator;
@@ -45,7 +45,7 @@ public class RestauranteController {
 
     @GetMapping("/{id}")
     public RestauranteRequest buscar(@PathVariable Long id) {
-        Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(id);
+        Restaurante restaurante = restauranteService.buscarOuFalhar(id);
 
         return restauranteModelAssembler.toModel(restaurante);
     }
@@ -55,7 +55,7 @@ public class RestauranteController {
         try {
             Restaurante restaurante = restauranteInputDesassembler.toDomainObject(restauranteInput);
 
-            return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restaurante));
+            return restauranteModelAssembler.toModel(restauranteService.salvar(restaurante));
         } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -64,7 +64,7 @@ public class RestauranteController {
     @PutMapping("/{id}")
     public RestauranteRequest atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
+            Restaurante restauranteAtual = restauranteService.buscarOuFalhar(id);
 
             restauranteInputDesassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
@@ -77,13 +77,13 @@ public class RestauranteController {
     @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void ativar(@PathVariable Long restauranteId) {
-        cadastroRestauranteService.ativar(restauranteId);
+        restauranteService.ativar(restauranteId);
     }
 
     @DeleteMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inativar(@PathVariable Long restauranteId) {
-        cadastroRestauranteService.inativar(restauranteId);
+        restauranteService.inativar(restauranteId);
     }
 }
 

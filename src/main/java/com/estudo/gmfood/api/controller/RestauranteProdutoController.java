@@ -7,7 +7,7 @@ import com.estudo.gmfood.api.model.input.ProdutoInput;
 import com.estudo.gmfood.domain.model.Produto;
 import com.estudo.gmfood.domain.model.Restaurante;
 import com.estudo.gmfood.domain.repository.ProdutoRepository;
-import com.estudo.gmfood.domain.service.CadastroRestauranteService;
+import com.estudo.gmfood.domain.service.RestauranteService;
 import com.estudo.gmfood.domain.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class RestauranteProdutoController {
     private ProdutoService produtoService;
 
     @Autowired
-    private CadastroRestauranteService restauranteService;
+    private RestauranteService restauranteService;
 
     @Autowired
     private ProdutoRepository produtoRepository;
