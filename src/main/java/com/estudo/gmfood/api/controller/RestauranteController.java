@@ -86,3 +86,4 @@ public class RestauranteController {
         cadastroRestauranteService.inativar(restauranteId);
     }
 }
+
