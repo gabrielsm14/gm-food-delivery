@@ -1,14 +1,14 @@
 package com.estudo.gmfood.domain.service;
 
+import com.estudo.gmfood.domain.exception.RestauranteNaoEncontradaException;
 import com.estudo.gmfood.domain.model.Cidade;
+import com.estudo.gmfood.domain.model.Cozinha;
 import com.estudo.gmfood.domain.model.FormaPagamento;
+import com.estudo.gmfood.domain.model.Restaurante;
+import com.estudo.gmfood.domain.model.Usuario;
+import com.estudo.gmfood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.estudo.gmfood.domain.exception.RestauranteNaoEncontradaException;
-import com.estudo.gmfood.domain.model.Cozinha;
-import com.estudo.gmfood.domain.model.Restaurante;
-import com.estudo.gmfood.domain.repository.RestauranteRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -25,6 +25,9 @@ public class RestauranteService {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
@@ -84,6 +87,24 @@ public class RestauranteService {
 		Restaurante restaurante = buscarOuFalhar(restauranteId);
 
 		restaurante.fechar();
+	}
+
+	@Transactional
+	public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
+		restaurante.removerResponsavel(usuario);
+	}
+
+	@Transactional
+	public void associarGrupo(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
+		restaurante.adiconarResponsavel(usuario);
 	}
 
 	public Restaurante buscarOuFalhar(Long id) {
