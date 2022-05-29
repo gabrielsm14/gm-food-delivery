@@ -47,7 +47,7 @@ public class GrupoService {
 
         Permissao permissao = permissaoService.buscarOuFalhar(permissaoId);
 
-        grupo.adicionarPermissao(permissao);
+        grupo.removerPermissao(permissao);
     }
 
     @Transactional

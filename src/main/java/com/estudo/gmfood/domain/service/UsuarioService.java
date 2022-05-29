@@ -2,6 +2,8 @@ package com.estudo.gmfood.domain.service;
 
 import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.exception.UsuarioNaoEncontradaException;
+import com.estudo.gmfood.domain.model.Grupo;
+import com.estudo.gmfood.domain.model.Permissao;
 import com.estudo.gmfood.domain.model.Usuario;
 import com.estudo.gmfood.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private GrupoService grupoService;
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
@@ -40,6 +45,24 @@ public class UsuarioService {
         }
 
         usuario.setSenha(novaSenha);
+    }
+
+    @Transactional
+    public void desassociarGrupo(Long usuarioId, Long grupoId) {
+        Usuario usuario = buscarOuFalhar(usuarioId);
+
+        Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+
+        usuario.removerGrupo(grupo);
+    }
+
+    @Transactional
+    public void associarGrupo(Long  usuarioId, Long grupoId) {
+        Usuario usuario = buscarOuFalhar(usuarioId);
+
+        Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+
+        usuario.adicionarGrupo(grupo);
     }
 
     public Usuario buscarOuFalhar(Long id) {
