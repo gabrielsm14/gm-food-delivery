@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class RestauranteService {
 
@@ -73,6 +75,16 @@ public class RestauranteService {
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
 		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+
+	@Transactional
+	public void ativar(List<Long> restaurantesIds) {
+		restaurantesIds.forEach(this::ativar);
+	}
+
+	@Transactional
+	public void inativar(List<Long> restaurantesIds) {
+		restaurantesIds.forEach(this::inativar);
 	}
 
 	@Transactional

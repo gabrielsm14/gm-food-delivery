@@ -8,6 +8,7 @@ import com.estudo.gmfood.api.model.input.RestauranteInput;
 import com.estudo.gmfood.domain.exception.CidadeNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.CozinhaNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
+import com.estudo.gmfood.domain.exception.RestauranteNaoEncontradaException;
 import com.estudo.gmfood.domain.model.Restaurante;
 import com.estudo.gmfood.domain.repository.RestauranteRepository;
 import com.estudo.gmfood.domain.service.RestauranteService;
@@ -85,5 +86,26 @@ public class RestauranteController {
     public void inativar(@PathVariable Long restauranteId) {
         restauranteService.inativar(restauranteId);
     }
+
+    @PutMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativarMultiplos(@RequestBody List<Long> restaurantesIds) {
+        try {
+            restauranteService.ativar(restaurantesIds);
+        } catch (RestauranteNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/inativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativarMultiplos(@RequestBody List<Long> restaurantesIds) {
+        try {
+            restauranteService.inativar(restaurantesIds);
+        } catch (RestauranteNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
 }
+
 
