@@ -1,5 +1,6 @@
 package com.estudo.gmfood.domain.model;
 
+import com.estudo.gmfood.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -60,6 +61,14 @@ public class Pedido {
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens = new ArrayList<>();
 
+	public void definirFrete() {
+		setTaxaFrete(getRestaurante().getTaxaFrete());
+	}
+
+	public void atribuirPedidoAosItens() {
+		getItens().forEach(item -> item.setPedido(this));
+	}
+
 	public void calcularValorTotal() {
 		getItens().forEach(ItemPedido::calcularPrecoTotal);
 
@@ -71,13 +80,29 @@ public class Pedido {
 		this.valorTotal = this.subtotal.add(this.taxaFrete);
 	}
 
-	public void definirFrete() {
-		setTaxaFrete(getRestaurante().getTaxaFrete());
+	public void confimar() {
+		setStatus(StatusPedido.CONFIRMADO);
+		setDataConfirmacao(LocalDateTime.now());
 	}
 
-	public void atribuirPedidoAosItens() {
-		getItens().forEach(item -> item.setPedido(this));
+	public void entregar() {
+		setStatus(StatusPedido.ENTREGUE);
+		setDataEntrega(LocalDateTime.now());
 	}
+
+	public void cancelar() {
+		setStatus(StatusPedido.CANCELADO);
+		setDataCancelamento(LocalDateTime.now());
+	}
+
+	private void setStatus(StatusPedido novoStatus) {
+		if (getStatus().naoPodeAlterarPara(novoStatus)) {
+			throw new NegocioException(String.format("Status do pedido %d não pode ser alterado de %s para %s",
+					getId(), getStatus().getDescricao(), novoStatus.getDescricao()));
+		}
+		this.status = novoStatus;
+	}
+
 }
 
 
