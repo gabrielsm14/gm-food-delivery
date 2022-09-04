@@ -51,9 +51,9 @@ public class PedidoController {
         return pedidoResumoRequestAssembler.toCollectionModel(todosPedidos);
     }
 
-    @GetMapping("{/id}")
-    public PedidoRequest buscar(@PathVariable Long id) {
-        Pedido pedido = emissaoPedidoService.buscarOuFalhar(id);
+    @GetMapping("{/codigoPedido}")
+    public PedidoRequest buscar(@PathVariable String codigoPedido) {
+        Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 
         return pedidoRequestAssembler.toModel(pedido);
     }
