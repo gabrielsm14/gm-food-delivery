@@ -7,6 +7,7 @@ import com.estudo.gmfood.api.model.CozinhaRequest;
 import com.estudo.gmfood.api.model.PedidoRequest;
 import com.estudo.gmfood.api.model.PedidoResumoRequest;
 import com.estudo.gmfood.api.model.input.PedidoInput;
+import com.estudo.gmfood.core.data.PageableTranslator;
 import com.estudo.gmfood.domain.exception.EntidadeNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Pedido;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/pedidos")
@@ -58,6 +60,8 @@ public class PedidoController {
 
     @GetMapping
     public Page<PedidoResumoRequest> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable page) {
+        page = traduzirPageable(page);
+
         Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), page);
 
         List<PedidoResumoRequest> pedidosResumoRequest = pedidoResumoRequestAssembler.toCollectionModel(pedidosPage.getContent());
@@ -90,5 +94,15 @@ public class PedidoController {
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
+    }
+
+    private Pageable traduzirPageable(Pageable apiPage) {
+        var mapeamento = Map.of(
+                "codigo", "codigo",
+                "restaurante.nome", "restaurante.nome",
+                "cliente", "cliente.nome",
+                "valorTotal", "valorTotal");
+
+        return PageableTranslator.translate(apiPage, mapeamento);
     }
 }
