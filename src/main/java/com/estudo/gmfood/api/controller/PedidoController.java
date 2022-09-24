@@ -11,7 +11,9 @@ import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Pedido;
 import com.estudo.gmfood.domain.model.Usuario;
 import com.estudo.gmfood.domain.repository.PedidoRepository;
+import com.estudo.gmfood.domain.repository.filter.PedidoFilter;
 import com.estudo.gmfood.domain.service.EmissaoPedidoService;
+import com.estudo.gmfood.infrastructure.repository.spec.PedidoSpecs;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +52,8 @@ public class PedidoController {
     private PedidoInputDisassembler pedidoInputDisassembler;
 
     @GetMapping
-    public List<PedidoResumoRequest> listar() {
-        List<Pedido> todosPedidos = pedidoRepository.findAll();
+    public List<PedidoResumoRequest> pesquisar(PedidoFilter filtro) {
+        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
 
         return pedidoResumoRequestAssembler.toCollectionModel(todosPedidos);
     }
