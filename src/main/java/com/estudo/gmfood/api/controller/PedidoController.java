@@ -3,6 +3,7 @@ package com.estudo.gmfood.api.controller;
 import com.estudo.gmfood.api.assembier.PedidoInputDisassembler;
 import com.estudo.gmfood.api.assembier.PedidoRequestAssembler;
 import com.estudo.gmfood.api.assembier.PedidoResumoRequestAssembler;
+import com.estudo.gmfood.api.model.CozinhaRequest;
 import com.estudo.gmfood.api.model.PedidoRequest;
 import com.estudo.gmfood.api.model.PedidoResumoRequest;
 import com.estudo.gmfood.api.model.input.PedidoInput;
@@ -18,6 +19,10 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,10 +57,14 @@ public class PedidoController {
     private PedidoInputDisassembler pedidoInputDisassembler;
 
     @GetMapping
-    public List<PedidoResumoRequest> pesquisar(PedidoFilter filtro) {
-        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
+    public Page<PedidoResumoRequest> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable page) {
+        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), page);
 
-        return pedidoResumoRequestAssembler.toCollectionModel(todosPedidos);
+        List<PedidoResumoRequest> pedidosResumoRequest = pedidoResumoRequestAssembler.toCollectionModel(pedidosPage.getContent());
+
+        Page<PedidoResumoRequest> cozinhasRequestPage = new PageImpl<>(pedidosResumoRequest, page, pedidosPage.getTotalElements());
+
+        return cozinhasRequestPage;
     }
 
     @GetMapping("{/codigoPedido}")
