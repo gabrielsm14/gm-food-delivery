@@ -20,7 +20,7 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    public Produto buscarOuFalhar(Long restauranteId, Long produtoId) {
-        return produtoRepository.findById(restauranteId, produtoId).orElseThrow(() -> new ProdutoNaoEncontradaException(restauranteId, produtoId));
-    }
+//    public Produto buscarOuFalhar(Long restauranteId, Long produtoId) {
+//        return produtoRepository.findById(restauranteId, produtoId).orElseThrow(() -> new ProdutoNaoEncontradaException(restauranteId, produtoId));
+//    }
 }

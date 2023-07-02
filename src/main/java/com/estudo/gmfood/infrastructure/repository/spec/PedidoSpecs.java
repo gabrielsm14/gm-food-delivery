@@ -1,7 +1,7 @@
 package com.estudo.gmfood.infrastructure.repository.spec;
 
 import com.estudo.gmfood.domain.model.Pedido;
-import com.estudo.gmfood.domain.repository.filter.PedidoFilter;
+import com.estudo.gmfood.domain.filter.PedidoFilter;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;

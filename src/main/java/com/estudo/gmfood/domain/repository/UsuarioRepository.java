@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends CustomJpaRepository<Usuario, Long> {
 
-    Optional<Usuario> finByEmail(String email);
+//    Optional<Usuario> finByEmail(String email);
 }

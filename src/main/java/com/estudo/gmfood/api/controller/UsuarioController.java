@@ -46,26 +46,26 @@ public class UsuarioController {
         return usuarioRequestAssembler.toModel(usuario);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioRequest adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
-        Usuario usuario = usuarioInputDisassembler.toDomainObject(usuarioInput);
-
-        usuario = usuarioService.salvar(usuario);
-
-        return usuarioRequestAssembler.toModel(usuario);
-    }
-
-    @PutMapping("/{id}")
-    public UsuarioRequest atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioInput usuarioInput) {
-        Usuario usuarioAtual = usuarioService.buscarOuFalhar(id);
-
-        usuarioInputDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
-
-        usuarioAtual = usuarioService.salvar(usuarioAtual);
-
-        return usuarioRequestAssembler.toModel(usuarioAtual);
-    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public UsuarioRequest adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
+//        Usuario usuario = usuarioInputDisassembler.toDomainObject(usuarioInput);
+//
+//        usuario = usuarioService.salvar(usuario);
+//
+//        return usuarioRequestAssembler.toModel(usuario);
+//    }
+//
+//    @PutMapping("/{id}")
+//    public UsuarioRequest atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioInput usuarioInput) {
+//        Usuario usuarioAtual = usuarioService.buscarOuFalhar(id);
+//
+//        usuarioInputDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
+//
+//        usuarioAtual = usuarioService.salvar(usuarioAtual);
+//
+//        return usuarioRequestAssembler.toModel(usuarioAtual);
+//    }
 
     @PutMapping("/{id}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)

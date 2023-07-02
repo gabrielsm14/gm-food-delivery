@@ -23,18 +23,18 @@ public class UsuarioService {
     @Autowired
     private GrupoService grupoService;
 
-    @Transactional
-    public Usuario salvar(Usuario usuario) {
-        usuarioRepository.detach(usuario);
-
-        Optional<Usuario> usuarioExistente = usuarioRepository.finByEmail(usuario.getEmail());
-
-        if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
-            throw new NegocioException(String.format("Já existe um usuário cadastrado com o e-mail %s", usuario.getEmail()));
-        }
-
-        return usuarioRepository.save(usuario);
-    }
+//    @Transactional
+//    public Usuario salvar(Usuario usuario) {
+//        usuarioRepository.detach(usuario);
+//
+//        Optional<Usuario> usuarioExistente = usuarioRepository.finByEmail(usuario.getEmail());
+//
+//        if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
+//            throw new NegocioException(String.format("Já existe um usuário cadastrado com o e-mail %s", usuario.getEmail()));
+//        }
+//
+//        return usuarioRepository.save(usuario);
+//    }
 
     @Transactional
     public void alterarSenha(Long id, String senhaAtual, String novaSenha) {

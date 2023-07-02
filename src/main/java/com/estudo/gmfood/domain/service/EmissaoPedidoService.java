@@ -43,7 +43,7 @@ public class EmissaoPedidoService {
     @Transactional
     public Pedido emitir(Pedido pedido) {
         validarPedido(pedido);
-        validarItens(pedido);
+//        validarItens(pedido);
 
         pedido.setTaxaFrete(pedido.getRestaurante().getTaxaFrete());
         pedido.calcularValorTotal();
@@ -68,14 +68,14 @@ public class EmissaoPedidoService {
         }
     }
 
-    private void validarItens(Pedido pedido) {
-        pedido.getItens().forEach(item -> {
-            Produto produto = cadastroProduto.buscarOuFalhar(
-                    pedido.getRestaurante().getId(), item.getProduto().getId());
-
-            item.setPedido(pedido);
-            item.setProduto(produto);
-            item.setPrecoUnitario(produto.getPreco());
-        });
-    }
+//    private void validarItens(Pedido pedido) {
+//        pedido.getItens().forEach(item -> {
+//            Produto produto = cadastroProduto.buscarOuFalhar(
+//                    pedido.getRestaurante().getId(), item.getProduto().getId());
+//
+//            item.setPedido(pedido);
+//            item.setProduto(produto);
+//            item.setPrecoUnitario(produto.getPreco());
+//        });
+//    }
 }

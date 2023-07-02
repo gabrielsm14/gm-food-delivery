@@ -43,19 +43,20 @@ public class RestauranteProdutoController {
 
         if (incluirInativos) {
             todosProdutos = produtoRepository.findTodosByRestaurante(restaurante);
-        } else {
-            produtoRepository.findAtivosByRestaurantes(restaurante);
         }
+//        else {
+//            produtoRepository.findAtivosByRestaurantes(restaurante);
+//        }
 
         return produtoRequestAssembler.toCollectionModel(todosProdutos);
     }
 
-    @GetMapping("/{produtoId}")
-    public ProdutoRequest buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
-        Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
-
-        return produtoRequestAssembler.toModel(produto);
-    }
+//    @GetMapping("/{produtoId}")
+//    public ProdutoRequest buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+//        Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
+//
+//        return produtoRequestAssembler.toModel(produto);
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -70,14 +71,14 @@ public class RestauranteProdutoController {
         return produtoRequestAssembler.toModel(produto);
     }
 
-    @PutMapping("{produtoId}")
-    public ProdutoRequest atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestBody @Valid ProdutoInput produtoInput) {
-        Produto produtoAtual = produtoService.buscarOuFalhar(restauranteId, produtoId);
-
-        produtoInputDisassembler.copyToDomainObject(produtoInput, produtoAtual);
-
-        produtoAtual = produtoService.salvar(produtoAtual);
-
-        return produtoRequestAssembler.toModel(produtoAtual);
-    }
+//    @PutMapping("{produtoId}")
+//    public ProdutoRequest atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestBody @Valid ProdutoInput produtoInput) {
+//        Produto produtoAtual = produtoService.buscarOuFalhar(restauranteId, produtoId);
+//
+//        produtoInputDisassembler.copyToDomainObject(produtoInput, produtoAtual);
+//
+//        produtoAtual = produtoService.salvar(produtoAtual);
+//
+//        return produtoRequestAssembler.toModel(produtoAtual);
+//    }
 }
