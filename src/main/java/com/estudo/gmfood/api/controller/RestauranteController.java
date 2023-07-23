@@ -1,26 +1,27 @@
 package com.estudo.gmfood.api.controller;
 
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.SmartValidator;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.estudo.gmfood.api.assembier.RestauranteInputDesassembler;
+import com.estudo.gmfood.api.assembier.RestauranteModelAssembler;
+import com.estudo.gmfood.api.model.RestauranteRequest;
+import com.estudo.gmfood.api.model.input.RestauranteInput;
+import com.estudo.gmfood.api.model.view.RestauranteView;
+import com.estudo.gmfood.domain.exception.CidadeNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.CozinhaNaoEncontradaException;
 import com.estudo.gmfood.domain.exception.NegocioException;
+import com.estudo.gmfood.domain.exception.RestauranteNaoEncontradaException;
 import com.estudo.gmfood.domain.model.Restaurante;
 import com.estudo.gmfood.domain.repository.RestauranteRepository;
-import com.estudo.gmfood.domain.service.CadastroRestauranteService;
+import com.estudo.gmfood.domain.service.RestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.validation.SmartValidator;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -30,48 +31,96 @@ public class RestauranteController {
     private RestauranteRepository restauranteRepository;
 
     @Autowired
-    private CadastroRestauranteService cadastroRestauranteService;
+    private RestauranteService restauranteService;
 
     @Autowired
     private SmartValidator validator;
 
+    @Autowired
+    private RestauranteModelAssembler restauranteModelAssembler;
+
+    @Autowired
+    private RestauranteInputDesassembler restauranteInputDesassembler;
+
     @GetMapping
-    public List<Restaurante> listar() {
-        return restauranteRepository.findAll();
+    public List<RestauranteRequest> listar() {
+        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
+    @JsonView(RestauranteView.Resumo.class)
+    @GetMapping(params = "projecao=resumo")
+    public List<RestauranteRequest> listarResumido() {
+        return listar();
+    }
+
+    @JsonView(RestauranteView.ApenasNome.class)
+    @GetMapping(params = "projecao=apenas-nome")
+    public List<RestauranteRequest> listarApenasNomes() {
+        return listar();
+    }
 
     @GetMapping("/{id}")
-    public Restaurante buscar(@PathVariable Long id) {
-        if (true) {
-            throw new IllegalArgumentException("test");
-        }
-        return cadastroRestauranteService.buscarOuFalhar(id);
+    public RestauranteRequest buscar(@PathVariable Long id) {
+        Restaurante restaurante = restauranteService.buscarOuFalhar(id);
 
+        return restauranteModelAssembler.toModel(restaurante);
     }
 
     @PostMapping
-    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+    public RestauranteRequest adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
+            Restaurante restaurante = restauranteInputDesassembler.toDomainObject(restauranteInput);
 
-            return cadastroRestauranteService.salvar(restaurante);
-        } catch (CozinhaNaoEncontradaException e) {
+            return restauranteModelAssembler.toModel(restauranteService.salvar(restaurante));
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Restaurante atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante) {
-
-        Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
-
-        BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro",
-                "produtos");
+    public RestauranteRequest atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
         try {
+            Restaurante restauranteAtual = restauranteService.buscarOuFalhar(id);
 
-            return restauranteRepository.save(restauranteAtual);
-        } catch (CozinhaNaoEncontradaException e) {
+            restauranteInputDesassembler.copyToDomainObject(restauranteInput, restauranteAtual);
+
+            return restauranteModelAssembler.toModel(restauranteRepository.save(restauranteAtual));
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
-    } 
+    }
+
+    @PutMapping("/{restauranteId}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable Long restauranteId) {
+        restauranteService.ativar(restauranteId);
+    }
+
+    @DeleteMapping("/{restauranteId}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable Long restauranteId) {
+        restauranteService.inativar(restauranteId);
+    }
+
+    @PutMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativarMultiplos(@RequestBody List<Long> restaurantesIds) {
+        try {
+            restauranteService.ativar(restaurantesIds);
+        } catch (RestauranteNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/inativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativarMultiplos(@RequestBody List<Long> restaurantesIds) {
+        try {
+            restauranteService.inativar(restaurantesIds);
+        } catch (RestauranteNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
 }
+
+

@@ -16,6 +16,8 @@
 	<description>API de delivery de comida</description>
 	<properties>
 		<java.version>11</java.version>
+		<modelmapper.version>3.0.0</modelmapper.version>
+		<jasperreports.version>6.20.0</jasperreports.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -87,7 +89,21 @@
 			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>${jasperreports.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-functions</artifactId>
+			<version>${jasperreports.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
