@@ -26,6 +26,6 @@ public class FluxoPedidoService {
     @Transactional
     public void entregar(String codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
-        pedido.cancelar();
+        pedido.entregar();
     }
 }

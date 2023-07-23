@@ -5,8 +5,12 @@ import com.estudo.gmfood.api.assembier.PedidoRequestAssembler;
 import com.estudo.gmfood.api.assembier.PedidoResumoRequestAssembler;
 import com.estudo.gmfood.api.model.PedidoRequest;
 import com.estudo.gmfood.api.model.PedidoResumoRequest;
+import com.estudo.gmfood.api.model.input.PedidoInput;
 import com.estudo.gmfood.core.data.PageableTranslator;
+import com.estudo.gmfood.domain.exception.EntidadeNaoEncontradaException;
+import com.estudo.gmfood.domain.exception.NegocioException;
 import com.estudo.gmfood.domain.model.Pedido;
+import com.estudo.gmfood.domain.model.Usuario;
 import com.estudo.gmfood.domain.repository.PedidoRepository;
 import com.estudo.gmfood.domain.filter.PedidoFilter;
 import com.estudo.gmfood.domain.service.EmissaoPedidoService;
@@ -16,11 +20,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -63,30 +66,36 @@ public class PedidoController {
         return pedidoRequestAssembler.toModel(pedido);
     }
 
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public PedidoRequest adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
-//        try {
-//            Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
-//
-//            // TODO pegar usuário autenticado
-//            novoPedido.setCliente(new Usuario());
-//            novoPedido.getCliente().setId(1L);
-//
-//            novoPedido = emissaoPedidoService.emitir(novoPedido);
-//
-//            return pedidoRequestAssembler.toModel(novoPedido);
-//        } catch (EntidadeNaoEncontradaException e) {
-//            throw new NegocioException(e.getMessage(), e);
-//        }
-//    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PedidoRequest adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
+        try {
+            Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
+
+            // TODO pegar usuário autenticado
+            novoPedido.setCliente(new Usuario());
+            novoPedido.getCliente().setId(1L);
+
+            novoPedido = emissaoPedidoService.emitir(novoPedido);
+
+            return pedidoRequestAssembler.toModel(novoPedido);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
 
     private Pageable traduzirPageable(Pageable apiPage) {
         var mapeamento = Map.of(
                 "codigo", "codigo",
+                "subtotal", "subtotal",
+                "taxaFrete", "taxaFrete",
+                "valorTotal", "valorTotal",
+                "dataCriacao", "dataCriacao",
                 "restaurante.nome", "restaurante.nome",
-                "cliente", "cliente.nome",
-                "valorTotal", "valorTotal");
+                "restaurante.id", "restaurante.id",
+                "cliente.id", "cliente.id",
+                "cliente.nome", "cliente.nome"
+        );
 
         return PageableTranslator.translate(apiPage, mapeamento);
     }
